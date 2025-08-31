@@ -4,21 +4,18 @@ const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "*"
+    origin: "*"  // Permite que cualquier frontend se conecte
   }
-});
-
-app.get("/", (req, res) => {
-  res.send("Servidor de chat funcionando 🚀");
 });
 
 io.on("connection", (socket) => {
   console.log("Nuevo usuario conectado");
 
   socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+    io.emit("chat message", msg); // Reenvía el mensaje a todos
   });
 
   socket.on("disconnect", () => {
@@ -27,6 +24,4 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+server.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
