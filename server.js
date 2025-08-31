@@ -1,32 +1,32 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const cors = require("cors");
 
 const app = express();
-app.use(cors());
-
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
+  cors: {
+    origin: "*"
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("Servidor de chat funcionando 🚀");
 });
 
 io.on("connection", (socket) => {
-    console.log("Un usuario se conectó");
+  console.log("Nuevo usuario conectado");
 
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
-    });
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
 
-    socket.on("disconnect", () => {
-        console.log("Usuario desconectado");
-    });
+  socket.on("disconnect", () => {
+    console.log("Usuario desconectado");
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
